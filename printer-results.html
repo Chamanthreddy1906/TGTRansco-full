@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Printer Recommendations — TG Transco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f7fa;
+      --bg-tertiary: #eef2f7;
+      --text-primary: #1a202c;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --border-color: #e2e8f0;
+      --accent-primary: #0066cc;
+      --accent-secondary: #00a1de;
+      --accent-tertiary: #f0f8ff;
+      --success: #059669;
+      --warning: #f59e0b;
+      --error: #dc2626;
+      --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-display: 'Poppins', sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-primary);font-size:14px;line-height:1.6;color:var(--text-primary);background:var(--bg-secondary);min-height:100vh;padding:40px 20px}
+    .container{max-width:1400px;margin:0 auto}
+
+    .header{background:var(--bg-primary);border-bottom:1px solid var(--border-color);margin:-40px -20px 40px;padding:16px 40px;display:flex;justify-content:space-between;align-items:center}
+    .nav-logo{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text-primary);text-decoration:none}
+    .nav-logo span{color:var(--accent-primary)}
+    .back-link{color:var(--accent-primary);text-decoration:none;font-size:13px;font-weight:600}
+    .back-link:hover{text-decoration:underline}
+
+    .page-header{margin-bottom:48px;text-align:center}
+    .page-header h1{font-family:var(--font-display);font-size:36px;font-weight:700;margin-bottom:12px}
+    .page-header p{color:var(--text-secondary);font-size:14px}
+
+    .tabs{display:flex;gap:8px;margin-bottom:40px;border-bottom:1px solid var(--border-color);overflow-x:auto}
+    .tab-btn{padding:12px 24px;background:transparent;border:none;color:var(--text-secondary);font-family:var(--font-primary);font-size:14px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+    .tab-btn:hover{color:var(--text-primary)}
+    .tab-btn.active{color:var(--accent-primary);border-bottom-color:var(--accent-primary)}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+
+    .recommendations-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px;margin-bottom:60px}
+    .pc-card{background:var(--bg-primary);border:1px solid var(--border-color);border-radius:12px;overflow:hidden;transition:all .3s;display:flex;flex-direction:column;position:relative;box-shadow:var(--shadow-sm)}
+    .pc-card:hover{border-color:var(--accent-primary);box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+    .pc-card.best{border:2px solid var(--success);background:rgba(5,150,105,.02)}
+
+    .card-header{padding:24px;background:var(--accent-tertiary);border-bottom:1px solid var(--border-color);position:relative}
+    .best-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,var(--success) 0%,var(--accent-primary) 100%);color:white;padding:6px 12px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .brand-name{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent-primary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+    .model-name{font-size:18px;font-weight:700;margin-bottom:12px;color:var(--text-primary)}
+    .price-section{display:flex;gap:12px;font-size:14px}
+    .price-inr{color:var(--text-primary);font-weight:700}
+    .price-usd{color:var(--text-secondary)}
+
+    .match-container{padding:20px 24px;background:var(--bg-secondary);border-bottom:1px solid var(--border-color)}
+    .match-label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;font-weight:600}
+    .match-bar{width:100%;height:8px;background:var(--border-color);border-radius:4px;overflow:hidden;margin-bottom:8px}
+    .match-fill{height:100%;background:linear-gradient(90deg,var(--success) 0%,var(--accent-primary) 100%);border-radius:4px;transition:width .6s ease-out}
+    .match-score{font-size:13px;font-weight:700}
+    .match-score span{color:var(--success)}
+
+    .unfulfilled-section{padding:16px 24px;background:var(--bg-secondary);border-bottom:1px solid var(--border-color)}
+    .unfulfilled-label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px;font-weight:600}
+    .unfulfilled-list{display:flex;flex-direction:column;gap:8px}
+    .unfulfilled-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#7f1d1d;padding:8px;background:#fee2e2;border-left:3px solid var(--error);border-radius:4px}
+    .unfulfilled-item::before{content:'⚠';flex-shrink:0;font-weight:bold}
+
+    .specs-list{padding:20px 24px;flex:1}
+    .specs-item{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-color)}
+    .specs-item:last-child{border-bottom:none}
+    .specs-label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-secondary);font-weight:600}
+    .specs-value{font-size:13px;color:var(--text-primary);font-weight:500}
+
+    .verdict-section{background:var(--bg-primary);border:1px solid var(--border-color);border-radius:12px;padding:40px;margin-bottom:60px;box-shadow:var(--shadow-sm)}
+    .verdict-title{font-family:var(--font-display);font-size:24px;font-weight:700;margin-bottom:24px;color:var(--accent-primary)}
+    .verdict-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:28px}
+    .verdict-card{padding:24px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;display:flex;flex-direction:column;gap:12px}
+    .verdict-card.best{border:2px solid var(--success);background:rgba(5,150,105,.02)}
+    .verdict-label{font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--text-secondary);font-weight:600}
+    .verdict-name{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text-primary)}
+    .verdict-reason{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+    .comparison-table{background:var(--bg-primary);border:1px solid var(--border-color);border-radius:12px;overflow:auto;box-shadow:var(--shadow-sm)}
+    .table-header{display:grid;grid-template-columns:160px repeat(auto-fit,minmax(180px,1fr));gap:0;background:var(--accent-tertiary);border-bottom:1px solid var(--border-color)}
+    .table-header-cell{padding:14px 12px;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--accent-primary);border-right:1px solid var(--border-color)}
+    .table-header-cell:last-child{border-right:none}
+    .table-rows{display:flex;flex-direction:column}
+    .table-row{display:grid;grid-template-columns:160px repeat(auto-fit,minmax(180px,1fr));gap:0;border-bottom:1px solid var(--border-color)}
+    .table-row:last-child{border-bottom:none}
+    .table-cell{padding:12px;font-size:13px;color:var(--text-primary);border-right:1px solid var(--border-color)}
+    .table-cell:last-child{border-right:none}
+    .table-label{font-weight:700;color:var(--accent-primary);background:var(--bg-secondary);text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+    .best-value{background:rgba(5,150,105,.08);color:var(--success);font-weight:600}
+
+    .loading-container{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px;gap:20px}
+    .loading-spinner{width:40px;height:40px;border:3px solid var(--border-color);border-top-color:var(--accent-primary);border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{color:var(--text-secondary);font-size:14px}
+
+    @media(max-width:768px){
+      body{padding:20px}
+      .header{margin:-20px -20px 40px;padding:16px 20px}
+      .page-header h1{font-size:26px}
+      .recommendations-grid{grid-template-columns:1fr}
+      .verdict-grid{grid-template-columns:1fr}
+      .table-header,.table-row{grid-template-columns:120px 1fr}
+      .verdict-section{padding:24px}
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <a href="index.html" class="nav-logo">TG <span>Transco</span></a>
+    <a href="printer-specs.html" class="back-link">← Adjust Requirements</a>
+  </header>
+
+  <div class="page-header">
+    <h1>🖨️ Printer Recommendations</h1>
+    <p>Results from all major printer brands based on your requirements</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('recommendations',event)">Recommendations</button>
+    <button class="tab-btn" onclick="switchTab('comparison',event)">Comparison</button>
+    <button class="tab-btn" onclick="switchTab('verdict',event)">Final Verdict</button>
+  </div>
+
+  <div id="recommendations" class="tab-content active">
+    <div class="recommendations-grid" id="recommendationsGrid">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading printer recommendations...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="comparison" class="tab-content">
+    <div class="comparison-table" id="comparisonTable">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading comparison...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="verdict" class="tab-content">
+    <div class="verdict-section" id="verdictSection">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Generating verdict...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var recommendations = [];
+  var userSpecs = {};
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var recData = sessionStorage.getItem('recommendations');
+    var specsData = sessionStorage.getItem('userSpecs');
+
+    if (!recData || !specsData) {
+      document.getElementById('recommendationsGrid').innerHTML =
+        '<div class="loading-container"><div style="font-size:48px">⚠️</div>' +
+        '<div class="loading-text">No recommendations found. <a href="/printer-specs.html">Go back</a></div></div>';
+      return;
+    }
+
+    recommendations = JSON.parse(recData);
+    userSpecs = JSON.parse(specsData);
+    renderRecommendations();
+  });
+
+  function renderRecommendations() {
+    var grid = document.getElementById('recommendationsGrid');
+    grid.innerHTML = '';
+
+    if (!recommendations.brands || recommendations.brands.length === 0) {
+      grid.innerHTML = '<p style="padding:40px">No recommendations found.</p>';
+      return;
+    }
+
+    var perBrandLimit = recommendations.brands.length === 1 ? 8 : 2;
+    var modelCount = 0;
+    recommendations.brands.forEach(function(brand) {
+      if (brand.models && brand.models.length > 0) {
+        brand.models.slice(0, perBrandLimit).forEach(function(model) {
+          modelCount++;
+          grid.appendChild(createPrinterCard(model, modelCount === 1));
+        });
+      }
+    });
+  }
+
+  function createPrinterCard(model, isBest) {
+    var unfulfilled = calculateUnfulfilled(model);
+    var card = document.createElement('div');
+    card.className = 'pc-card' + (isBest ? ' best' : '');
+    var matchPercent = model.match_score || 85;
+
+    card.innerHTML =
+      '<div class="card-header">' +
+        (isBest ? '<div class="best-badge">✓ Best Match</div>' : '') +
+        '<div class="brand-name">' + model.brand + '</div>' +
+        '<div class="model-name">' + model.name + '</div>' +
+        '<div class="price-section">' +
+          '<span class="price-inr">' + model.price_inr + '</span>' +
+          (model.price_usd ? '<span class="price-usd">' + model.price_usd + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="match-container">' +
+        '<div class="match-label">Match Score</div>' +
+        '<div class="match-bar"><div class="match-fill" style="width:' + matchPercent + '%"></div></div>' +
+        '<div class="match-score"><span>' + matchPercent + '%</span> match to your requirements</div>' +
+      '</div>' +
+      (unfulfilled.length > 0 ?
+        '<div class="unfulfilled-section">' +
+          '<div class="unfulfilled-label">Not Meeting (' + unfulfilled.length + ')</div>' +
+          '<div class="unfulfilled-list">' +
+            unfulfilled.map(function(i){ return '<div class="unfulfilled-item">' + i + '</div>'; }).join('') +
+          '</div>' +
+        '</div>' : '') +
+      '<div class="specs-list">' +
+        specRow('Technology', model.technology) +
+        specRow('Print Speed', model.print_speed) +
+        specRow('Resolution', model.resolution) +
+        specRow('Duplex', model.duplex) +
+        specRow('Memory', model.memory) +
+        specRow('Connectivity', model.connectivity) +
+        specRow('Paper Sizes', model.paper_size) +
+        specRow('Duty Cycle', model.duty_cycle) +
+        specRow('Scan Formats', model.scan_formats) +
+        specRow('Warranty', model.warranty) +
+      '</div>';
+
+    return card;
+  }
+
+  function specRow(label, value) {
+    if (!value) return '';
+    return '<div class="specs-item"><div class="specs-label">' + label + '</div><div class="specs-value">' + value + '</div></div>';
+  }
+
+  function calculateUnfulfilled(model) {
+    var unfulfilled = [];
+    var budget = parseInt(userSpecs.budget);
+    var rawPrice = (model.price_inr || '').replace(/[₹Rs.,\s]/gi, '');
+    var price = parseInt(rawPrice);
+
+    if (!isNaN(price) && !isNaN(budget) && price > budget) {
+      unfulfilled.push('Exceeds budget by ₹' + (price - budget).toLocaleString('en-IN'));
+    }
+    if (userSpecs.print_speed && model.print_speed) {
+      var reqPPM = parseInt(userSpecs.print_speed);
+      var gotPPM = parseInt(model.print_speed);
+      if (!isNaN(reqPPM) && !isNaN(gotPPM) && gotPPM < reqPPM) {
+        unfulfilled.push('Speed: Has ' + gotPPM + ' PPM, needs ' + reqPPM + '+ PPM');
+      }
+    }
+    if (userSpecs.duplex === 'automatic' && model.duplex && model.duplex.toLowerCase().indexOf('auto') === -1) {
+      unfulfilled.push('Duplex: Automatic duplex not supported');
+    }
+    if (userSpecs.technology && userSpecs.technology !== 'any' && model.technology &&
+        model.technology.toLowerCase().indexOf(userSpecs.technology.toLowerCase()) === -1) {
+      unfulfilled.push('Technology: Requires ' + userSpecs.technology + ' but got ' + model.technology);
+    }
+    return unfulfilled;
+  }
+
+  function switchTab(tabName, e) {
+    document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById(tabName).classList.add('active');
+    if (e && e.target) e.target.classList.add('active');
+    if (tabName === 'comparison') renderComparison();
+    else if (tabName === 'verdict') renderVerdict();
+  }
+
+  function renderComparison() {
+    var table = document.getElementById('comparisonTable');
+    var models = [];
+    var perBrandLimit = recommendations.brands.length === 1 ? 8 : 2;
+    recommendations.brands.forEach(function(b){ if (b.models) models.push.apply(models, b.models.slice(0,perBrandLimit)); });
+    if (models.length === 0) return;
+
+    var html = '<div class="table-header"><div class="table-header-cell">Specification</div>';
+    models.forEach(function(m){ html += '<div class="table-header-cell">' + m.brand + '<br><small>' + (m.name||'').substring(0,22) + '</small></div>'; });
+    html += '</div><div class="table-rows">';
+
+    var specs = [
+      { label: '💰 Price (INR)', key: 'price_inr' },
+      { label: '⚙️ Technology', key: 'technology' },
+      { label: '🚀 Print Speed', key: 'print_speed' },
+      { label: '📋 Copy Speed', key: 'copy_speed' },
+      { label: '🔍 Scan Speed', key: 'scan_speed' },
+      { label: '🖼️ Resolution', key: 'resolution' },
+      { label: '💾 Memory', key: 'memory' },
+      { label: '🔄 Duplex', key: 'duplex' },
+      { label: '📡 Connectivity', key: 'connectivity' },
+      { label: '📄 Paper Sizes', key: 'paper_size' },
+      { label: '📦 Duty Cycle', key: 'duty_cycle' },
+      { label: '🛡️ Warranty', key: 'warranty' }
+    ];
+
+    specs.forEach(function(spec) {
+      html += '<div class="table-row"><div class="table-cell table-label">' + spec.label + '</div>';
+      models.forEach(function(m){ html += '<div class="table-cell best-value">' + (m[spec.key] || '—') + '</div>'; });
+      html += '</div>';
+    });
+
+    html += '</div>';
+    table.innerHTML = html;
+  }
+
+  function renderVerdict() {
+    var section = document.getElementById('verdictSection');
+    var models = [];
+    var perBrandLimit = recommendations.brands.length === 1 ? 8 : 2;
+    recommendations.brands.forEach(function(b){ if (b.models) models.push.apply(models, b.models.slice(0,perBrandLimit)); });
+    models.sort(function(a,b){ return (b.match_score||0)-(a.match_score||0); });
+
+    var best = models[0];
+    var value = models.reduce(function(p,c){ return (parseInt((c.price_inr||'').replace(/\D/g,''))||999999) < (parseInt((p.price_inr||'').replace(/\D/g,''))||999999) ? c : p; }, models[0]);
+    var perf = models.reduce(function(p,c){ return (parseInt(c.print_speed)||0) > (parseInt(p.print_speed)||0) ? c : p; }, models[0]);
+
+    if (!best) { section.innerHTML = '<p>No data for verdict.</p>'; return; }
+
+    section.innerHTML =
+      '<div class="verdict-title">📊 Final Recommendation</div>' +
+      '<div class="verdict-grid">' +
+        verdictCard('🏆 Best Overall', best, true, 'Highest match score with your specifications.') +
+        verdictCard('💰 Best Value', value, false, 'Most competitive price for the features offered.') +
+        verdictCard('⚡ Best Performance', perf, false, 'Highest print speed and throughput for heavy workloads.') +
+      '</div>' +
+      '<div style="margin-top:32px;padding:20px;background:#f0f8ff;border:1px solid #e2e8f0;border-radius:12px;border-left:4px solid #059669">' +
+        '<p style="font-size:13px;line-height:1.8;color:#4a5568">' +
+          '<strong style="color:#1a202c">✓ Summary:</strong><br><br>' +
+          'The <strong>' + best.brand + ' ' + best.name + '</strong> is your top recommendation with ' +
+          '<strong>' + (best.match_score||85) + '% match</strong> to your requirements:' +
+          '<ul style="margin-top:12px;margin-left:24px;color:#059669;list-style:none">' +
+            (best.technology ? '<li>✓ ' + best.technology + '</li>' : '') +
+            (best.print_speed ? '<li>✓ Print Speed: ' + best.print_speed + '</li>' : '') +
+            (best.resolution ? '<li>✓ Resolution: ' + best.resolution + '</li>' : '') +
+            (best.warranty ? '<li>✓ Warranty: ' + best.warranty + '</li>' : '') +
+          '</ul>' +
+        '</p>' +
+      '</div>';
+  }
+
+  function verdictCard(label, model, isBest, reason) {
+    return '<div class="verdict-card' + (isBest ? ' best' : '') + '">' +
+      '<div class="verdict-label">' + label + '</div>' +
+      '<div class="verdict-name">' + model.brand + ' ' + model.name + '</div>' +
+      '<div class="verdict-reason">' + reason + '</div>' +
+      (model.price_inr ? '<div style="font-size:13px;font-weight:700;color:var(--accent-primary)">' + model.price_inr + '</div>' : '') +
+    '</div>';
+  }
+</script>
+</body>
+</html>

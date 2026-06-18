@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TG Transco — AI PC Advisor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f7fa;
+      --text-primary: #1a202c;
+      --text-secondary: #4a5568;
+      --border-color: #e2e8f0;
+      --accent-primary: #0066cc;
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-display: 'Poppins', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-primary);
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 40px;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent-primary); }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .selection-row {
+      display: flex;
+      flex-direction: row;
+      gap: 32px;
+    }
+
+    .selection-card {
+      width: 300px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 48px 32px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .selection-card:hover {
+      border-color: var(--accent-primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .card-icon { font-size: 56px; }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .card-button {
+      width: 100%;
+      padding: 12px 24px;
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-button:hover {
+      background: #0052a3;
+      box-shadow: var(--shadow-md);
+    }
+    .card-button:active { transform: scale(0.98); }
+
+    .selection-row.three { gap: 24px; }
+    .selection-row.three .selection-card { width: 260px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo">TG <span>Transco</span></a>
+  </header>
+  <main>
+    <div class="selection-row three">
+      <div class="selection-card" onclick="selectType('desktop')">
+        <div class="card-icon">🖥️</div>
+        <h2 class="card-title">Desktop PC</h2>
+        <button class="card-button">Get Started</button>
+      </div>
+      <div class="selection-card" onclick="selectType('laptop')">
+        <div class="card-icon">💻</div>
+        <h2 class="card-title">Laptop</h2>
+        <button class="card-button">Get Started</button>
+      </div>
+      <div class="selection-card" onclick="selectType('printer')">
+        <div class="card-icon">🖨️</div>
+        <h2 class="card-title">Printer</h2>
+        <button class="card-button">Get Started</button>
+      </div>
+    </div>
+  </main>
+  <script>
+    function selectType(type) {
+      sessionStorage.setItem('pcType', type);
+      if (type === 'printer') {
+        window.location.href = '/printer-specs.html';
+      } else {
+        window.location.href = '/specs.html';
+      }
+    }
+  </script>
+</body>
+</html>

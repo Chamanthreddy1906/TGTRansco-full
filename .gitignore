@@ -1,0 +1,15 @@
+# Environment variables (NEVER commit real API keys)
+.env
+.env.local
+
+# Dependencies
+node_modules/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs
+npm-debug.log*
+*.log

@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recommendations — TG Transco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f7fa;
+      --bg-tertiary: #eef2f7;
+      --text-primary: #1a202c;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --border-color: #e2e8f0;
+      --accent-primary: #0066cc;
+      --accent-secondary: #00a1de;
+      --accent-tertiary: #f0f8ff;
+      --success: #059669;
+      --warning: #f59e0b;
+      --error: #dc2626;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-display: 'Poppins', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-primary);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      margin: -40px -20px 40px;
+      padding: 16px 40px;
+      margin-bottom: 60px;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo-accent {
+      color: var(--accent-primary);
+      font-size: 22px;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .page-header p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-primary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.active {
+      color: var(--accent-primary);
+      border-bottom-color: var(--accent-primary);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* RECOMMENDATIONS GRID */
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+      margin-bottom: 60px;
+    }
+
+    .pc-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pc-card:hover {
+      border-color: var(--accent-primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .pc-card.best {
+      border: 2px solid var(--success);
+      background: rgba(5, 150, 105, 0.02);
+    }
+
+    .card-header {
+      padding: 24px;
+      background: var(--accent-tertiary);
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+
+    .best-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, var(--success) 0%, var(--accent-primary) 100%);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .model-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .price-section {
+      display: flex;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .price-inr {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .price-usd {
+      color: var(--text-secondary);
+    }
+
+    /* MATCH SCORE */
+    .match-container {
+      padding: 20px 24px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .match-label {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .match-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--border-color);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .match-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success) 0%, var(--accent-primary) 100%);
+      border-radius: 4px;
+      transition: width 0.6s ease-out;
+    }
+
+    .match-score {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .match-score span {
+      color: var(--success);
+    }
+
+    /* UNFULFILLED */
+    .unfulfilled-section {
+      padding: 16px 24px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .unfulfilled-label {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .unfulfilled-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .unfulfilled-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #7f1d1d;
+      padding: 8px;
+      background: #fee2e2;
+      border-left: 3px solid var(--error);
+      border-radius: 4px;
+    }
+
+    .unfulfilled-item::before {
+      content: '⚠';
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
+    /* SPECS */
+    .specs-list {
+      padding: 20px 24px;
+      flex: 1;
+    }
+
+    .specs-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .specs-item:last-child {
+      border-bottom: none;
+    }
+
+    .specs-label {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .specs-value {
+      font-size: 13px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* VERDICT */
+    .verdict-section {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 60px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .verdict-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: var(--accent-primary);
+    }
+
+    .verdict-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 28px;
+    }
+
+    .verdict-card {
+      padding: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .verdict-card.best {
+      border: 2px solid var(--success);
+      background: rgba(5, 150, 105, 0.02);
+    }
+
+    .verdict-label {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .verdict-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .verdict-reason {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* COMPARISON TABLE */
+    .comparison-table {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: auto;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .table-header {
+      display: grid;
+      grid-template-columns: 140px repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0;
+      background: var(--accent-tertiary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0;
+    }
+
+    .table-header-cell {
+      padding: 14px 12px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent-primary);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .table-header-cell:last-child {
+      border-right: none;
+    }
+
+    .table-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 140px repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .table-row:last-child {
+      border-bottom: none;
+    }
+
+    .table-cell {
+      padding: 12px;
+      font-size: 13px;
+      color: var(--text-primary);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .table-cell:last-child {
+      border-right: none;
+    }
+
+    .table-label {
+      font-weight: 700;
+      color: var(--accent-primary);
+      background: var(--bg-secondary);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .best-value {
+      background: rgba(5, 150, 105, 0.1);
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    /* LOADING */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      gap: 20px;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      .header {
+        margin: -20px -20px 40px;
+        padding: 16px 20px;
+      }
+
+      .page-header h1 {
+        font-size: 26px;
+      }
+
+      .recommendations-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .verdict-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table-header,
+      .table-row {
+        grid-template-columns: 100px 1fr;
+      }
+
+      .verdict-section {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="nav-logo">
+        
+        TG <span style="color:var(--accent-primary)">Transco</span>
+      </a>
+    </header>
+
+    <div class="page-header">
+      <h1>🎯 Recommendations for You</h1>
+      <p>Results from all major brands based on your requirements</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('recommendations')">Recommendations</button>
+      <button class="tab-btn" onclick="switchTab('comparison')">Comparison</button>
+      <button class="tab-btn" onclick="switchTab('verdict')">Final Verdict</button>
+    </div>
+
+    <!-- RECOMMENDATIONS TAB -->
+    <div id="recommendations" class="tab-content active">
+      <div class="recommendations-grid" id="recommendationsGrid">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading recommendations...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARISON TAB -->
+    <div id="comparison" class="tab-content">
+      <div class="comparison-table" id="comparisonTable">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading comparison...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERDICT TAB -->
+    <div id="verdict" class="tab-content">
+      <div class="verdict-section" id="verdictSection">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Generating verdict...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let recommendations = [];
+    let userSpecs = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const recData = sessionStorage.getItem('recommendations');
+      const specsData = sessionStorage.getItem('userSpecs');
+
+      if (!recData || !specsData) {
+        document.querySelector('.tab-content').innerHTML = `
+          <div class="loading-container">
+            <div style="font-size: 48px;">⚠️</div>
+            <div class="loading-text">No recommendations found. <a href="/specs.html">Go back</a></div>
+          </div>
+        `;
+        return;
+      }
+
+      recommendations = JSON.parse(recData);
+      userSpecs = JSON.parse(specsData);
+
+      renderRecommendations();
+    });
+
+    function renderRecommendations() {
+      const grid = document.getElementById('recommendationsGrid');
+      grid.innerHTML = '';
+
+      if (!recommendations.brands || recommendations.brands.length === 0) {
+        grid.innerHTML = '<p>No recommendations found.</p>';
+        return;
+      }
+
+      // If the user asked for a specific brand, only one brand object comes back —
+      // show all of its models instead of capping at 2.
+      const perBrandLimit = recommendations.brands.length === 1 ? 8 : 2;
+
+      let modelCount = 0;
+      recommendations.brands.forEach(brand => {
+        if (brand.models && brand.models.length > 0) {
+          const modelsToShow = brand.models.slice(0, perBrandLimit);
+          modelsToShow.forEach(model => {
+            modelCount++;
+            const card = createPCCard(model, modelCount === 1);
+            grid.appendChild(card);
+          });
+        }
+      });
+    }
+
+    function createPCCard(model, isBest = false) {
+      const unfulfilled = calculateUnfulfilled(model);
+      const card = document.createElement('div');
+      card.className = `pc-card ${isBest ? 'best' : ''}`;
+      
+      const matchPercent = model.match_score || 85;
+
+      card.innerHTML = `
+        <div class="card-header">
+          ${isBest ? '<div class="best-badge">✓ Best Match</div>' : ''}
+          <div class="brand-name">${model.brand}</div>
+          <div class="model-name">${model.name}</div>
+          <div class="price-section">
+            <span class="price-inr">₹${model.price_inr}</span>
+            <span class="price-usd">${model.price_usd}</span>
+          </div>
+        </div>
+
+        <div class="match-container">
+          <div class="match-label">Match Score</div>
+          <div class="match-bar">
+            <div class="match-fill" style="width: ${matchPercent}%"></div>
+          </div>
+          <div class="match-score"><span>${matchPercent}%</span> match to your requirements</div>
+        </div>
+
+        ${unfulfilled.length > 0 ? `
+          <div class="unfulfilled-section">
+            <div class="unfulfilled-label">Not Meeting (${unfulfilled.length})</div>
+            <div class="unfulfilled-list">
+              ${unfulfilled.map(item => `<div class="unfulfilled-item">${item}</div>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="specs-list">
+          <div class="specs-item">
+            <div class="specs-label">Processor</div>
+            <div class="specs-value">${model.cpu}</div>
+          </div>
+          <div class="specs-item">
+            <div class="specs-label">RAM</div>
+            <div class="specs-value">${model.ram}</div>
+          </div>
+          <div class="specs-item">
+            <div class="specs-label">Storage</div>
+            <div class="specs-value">${model.storage}</div>
+          </div>
+          <div class="specs-item">
+            <div class="specs-label">GPU</div>
+            <div class="specs-value">${model.gpu || 'Integrated'}</div>
+          </div>
+          <div class="specs-item">
+            <div class="specs-label">OS</div>
+            <div class="specs-value">${model.os}</div>
+          </div>
+          <div class="specs-item">
+            <div class="specs-label">Warranty</div>
+            <div class="specs-value">${model.warranty || '1 Year'}</div>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function calculateUnfulfilled(model) {
+      const unfulfilled = [];
+      const budget = parseInt(userSpecs.budget);
+      const price = parseInt(model.price_inr.replace(/[₹,]/g, ''));
+
+      if (price > budget) {
+        unfulfilled.push(`Exceeds budget by ₹${price - budget}`);
+      }
+
+      if (userSpecs.processor_gen && !model.cpu.toLowerCase().includes(userSpecs.processor_gen.toLowerCase().split(' ')[0])) {
+        unfulfilled.push(`CPU: Requires ${userSpecs.processor_gen}`);
+      }
+
+      if (userSpecs.ram && !model.ram.includes(userSpecs.ram)) {
+        unfulfilled.push(`RAM: Has ${model.ram}, needs ${userSpecs.ram}`);
+      }
+
+      if (userSpecs.storage && !model.storage.includes(userSpecs.storage.split('GB')[0])) {
+        unfulfilled.push(`Storage: Has ${model.storage}, needs ${userSpecs.storage}`);
+      }
+
+      return unfulfilled;
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+
+      if (tabName === 'comparison') {
+        renderComparison();
+      } else if (tabName === 'verdict') {
+        renderVerdict();
+      }
+    }
+
+    function renderComparison() {
+      const table = document.getElementById('comparisonTable');
+      if (recommendations.brands.length === 0) return;
+
+      let comparison = `<div class="table-header">
+        <div class="table-header-cell">Specifications</div>`;
+
+      const models = [];
+      const perBrandLimit = recommendations.brands.length === 1 ? 8 : 2;
+      recommendations.brands.forEach(brand => {
+        if (brand.models) {
+          models.push(...brand.models.slice(0, perBrandLimit));
+        }
+      });
+
+      models.forEach(model => {
+        comparison += `<div class="table-header-cell">${model.brand}<br>${model.name.substring(0, 20)}</div>`;
+      });
+
+      comparison += `</div><div class="table-rows">`;
+
+      const specs = [
+        { label: '💰 Price (INR)', key: 'price_inr' },
+        { label: '⚙️ Processor', key: 'cpu' },
+        { label: '🧠 RAM', key: 'ram' },
+        { label: '💾 Storage', key: 'storage' },
+        { label: '🎮 GPU', key: 'gpu' },
+        { label: '🪟 OS', key: 'os' },
+        { label: '🛡️ Warranty', key: 'warranty' }
+      ];
+
+      specs.forEach(spec => {
+        comparison += `<div class="table-row"><div class="table-cell table-label">${spec.label}</div>`;
+        models.forEach(model => {
+          const value = model[spec.key] || '-';
+          comparison += `<div class="table-cell best-value">${value}</div>`;
+        });
+        comparison += `</div>`;
+      });
+
+      comparison += `</div>`;
+      table.innerHTML = comparison;
+    }
+
+    function renderVerdict() {
+      const section = document.getElementById('verdictSection');
+      const bestModel = recommendations.brands?.[0]?.models?.[0];
+
+      if (!bestModel) {
+        section.innerHTML = '<p>No data for verdict.</p>';
+        return;
+      }
+
+      section.innerHTML = `
+        <div class="verdict-title">📊 Final Recommendation</div>
+        <div class="verdict-grid">
+          <div class="verdict-card best">
+            <div class="verdict-label">🏆 Best Overall</div>
+            <div class="verdict-name">${bestModel.brand} ${bestModel.name}</div>
+            <div class="verdict-reason">Perfect match. Best balance of performance, price, and features.</div>
+          </div>
+          <div class="verdict-card">
+            <div class="verdict-label">💰 Best Value</div>
+            <div class="verdict-name">${bestModel.brand}</div>
+            <div class="verdict-reason">Most competitive pricing without compromising on essential features.</div>
+          </div>
+          <div class="verdict-card">
+            <div class="verdict-label">⚡ Best Performance</div>
+            <div class="verdict-name">${bestModel.brand}</div>
+            <div class="verdict-reason">Highest performance metrics with latest generation components.</div>
+          </div>
+        </div>
+        <div style="margin-top: 32px; padding: 20px; background: #f0f8ff; border: 1px solid #e2e8f0; border-radius: 12px; border-left: 4px solid #059669;">
+          <p style="font-size: 13px; line-height: 1.7; color: #4a5568;">
+            <strong style="color: #1a202c;">✓ Recommendation Summary:</strong><br><br>
+            The <strong>${bestModel.brand} ${bestModel.name}</strong> is your ideal choice with 
+            <strong>${bestModel.match_score || 85}% match</strong> to your requirements:
+            <ul style="margin-top: 12px; margin-left: 24px; color: #059669; list-style: none;">
+              <li>✓ Latest generation ${bestModel.cpu}</li>
+              <li>✓ ${bestModel.ram} RAM</li>
+              <li>✓ ${bestModel.storage} storage</li>
+              <li>✓ ${bestModel.warranty || 'Comprehensive'} warranty</li>
+            </ul>
+          </p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

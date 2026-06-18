@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enter Specs — TG Transco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff; --bg2: #f5f7fa; --bg3: #eef2f7;
+      --txt: #1a202c; --txt2: #4a5568; --txt3: #718096;
+      --border: #e2e8f0; --accent: #0066cc; --alight: #e8f1fb;
+      --a3: #f0f8ff; --green: #059669; --glight: #ecfdf5;
+      --red: #dc2626;
+      --sh1: 0 1px 3px rgba(0,0,0,0.08);
+      --sh2: 0 4px 12px rgba(0,0,0,0.10);
+      --fp: 'Inter',sans-serif; --fd: 'Poppins',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fp);font-size:15px;line-height:1.6;color:var(--txt);background:var(--bg2);min-height:100vh}
+
+    .hdr{background:var(--bg);border-bottom:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+    .logo{font-family:var(--fd);font-size:22px;font-weight:700;text-decoration:none;color:var(--txt)}
+    .logo span{color:var(--accent)}
+    .back a{color:var(--accent);text-decoration:none;font-size:13px;font-weight:600}
+    .back a:hover{text-decoration:underline}
+
+    .wrap{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+    .ph{text-align:center;margin-bottom:36px}
+    .ph h1{font-family:var(--fd);font-size:32px;font-weight:700;margin-bottom:8px}
+    .ph p{color:var(--txt2);font-size:15px}
+    .badge{display:inline-block;background:var(--alight);color:var(--accent);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-top:14px}
+
+    .sec{background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;box-shadow:var(--sh1);transition:box-shadow .2s}
+    .sec.open{box-shadow:var(--sh2)}
+    .sec-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;cursor:pointer;user-select:none;transition:background .15s}
+    .sec-hdr:hover{background:var(--bg2)}
+    .sec.open .sec-hdr{background:var(--bg);border-bottom:1px solid var(--border)}
+    .sec-left{display:flex;align-items:center;gap:12px}
+    .sec-ico{font-size:20px}
+    .sec-ttl{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--txt)}
+    .sec-sub{font-size:12px;color:var(--txt3);margin-top:1px}
+    .chevron{font-size:18px;color:var(--txt3);transition:transform .25s ease;line-height:1}
+    .sec.open .chevron{transform:rotate(180deg);color:var(--accent)}
+    .status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--green);background:var(--glight);padding:3px 10px;border-radius:20px;margin-left:10px}
+    .status.empty{color:var(--txt3);background:var(--bg3)}
+
+    .body{display:none;padding:24px}
+    .sec.open .body{display:block}
+
+    .fg{margin-bottom:24px}
+    .fg:last-child{margin-bottom:0}
+    .lbl{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+    .lbl .req{color:var(--red);font-size:14px}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:8px 16px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-weight:500;color:var(--txt2);background:var(--bg);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap}
+    .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--a3)}
+    .chip.sel{border-color:var(--accent);background:var(--accent);color:#fff;font-weight:600}
+    .chip.oth{border-style:dashed;color:var(--txt3)}
+    .chip.oth:hover{border-color:var(--accent);color:var(--accent)}
+    .chip.oth.sel{background:var(--bg2);color:var(--accent);border-style:solid}
+
+    .oi{margin-top:10px;display:none}
+    .oi.vis{display:block}
+    .oi input,.oi textarea{width:100%;padding:10px 14px;border:1.5px solid var(--accent);border-radius:8px;font-family:var(--fp);font-size:14px;color:var(--txt);background:var(--a3);outline:none;transition:all .2s}
+    .oi input:focus,.oi textarea:focus{box-shadow:0 0 0 3px rgba(0,102,204,.15)}
+    .oi textarea{resize:vertical;min-height:72px}
+    .hint{font-size:11px;color:var(--txt3);margin-top:5px}
+
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    @media(max-width:600px){.row2{grid-template-columns:1fr}}
+
+    .bwrap{display:flex;align-items:center;max-width:320px}
+    .bpfx{padding:10px 14px;background:var(--bg3);border:1.5px solid var(--border);border-right:none;border-radius:8px 0 0 8px;font-size:14px;font-weight:600;color:var(--txt2)}
+    .binput{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:0 8px 8px 0;font-family:var(--fp);font-size:14px;color:var(--txt);background:var(--bg);outline:none;transition:all .2s}
+    .binput:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,102,204,.12)}
+
+    .actions{display:flex;gap:14px;justify-content:center;margin-top:36px}
+    .btn{padding:13px 36px;border:none;border-radius:8px;font-family:var(--fp);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+    .btnp{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(0,102,204,.3)}
+    .btnp:hover{background:#0052a3;box-shadow:0 4px 16px rgba(0,102,204,.35)}
+    .btnp:disabled{opacity:.55;cursor:not-allowed}
+    .btns{background:var(--bg);color:var(--txt2);border:1.5px solid var(--border)}
+    .btns:hover{background:var(--bg2);border-color:var(--accent);color:var(--accent)}
+
+    .overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.88);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+    .overlay.show{display:flex}
+    .spin{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .olt{font-weight:600;color:var(--txt);font-size:15px}
+    .ols{font-size:13px;color:var(--txt2)}
+
+    @media(max-width:600px){
+      .hdr{padding:14px 20px}
+      .wrap{padding:28px 14px 60px}
+      .body{padding:18px}
+      .actions{flex-direction:column}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <a href="index.html" class="logo">TG <span>Transco</span></a>
+  <div class="back"><a href="index.html">← Back to Home</a></div>
+</header>
+
+<div class="overlay" id="ov">
+  <div class="spin"></div>
+  <div class="olt">Finding the best PCs for you…</div>
+  <div class="ols">Searching across 10+ brands — this may take a moment</div>
+</div>
+
+<div class="wrap">
+  <div class="ph">
+    <h1>📋 Your Requirements</h1>
+    <p>Click each section to expand and fill your preferences</p>
+    <div class="badge" id="devBadge">Loading...</div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="sec open" id="s1">
+    <div class="sec-hdr" onclick="tog('s1')">
+      <div class="sec-left">
+        <span class="sec-ico">💰</span>
+        <div>
+          <div class="sec-ttl">Budget &amp; Purpose <span class="status empty" id="st1">Not set</span></div>
+          <div class="sec-sub">How much, and what will you use it for?</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Budget (₹ INR) <span class="req">*</span></div>
+          <div class="bwrap">
+            <span class="bpfx">₹</span>
+            <input class="binput" type="number" id="budgetIn" placeholder="e.g. 65000" min="10000" step="5000" oninput="syncBudget(this.value)">
+          </div>
+          <div class="chips" style="margin-top:10px" id="bchips">
+            <div class="chip" onclick="selBudget('30000')">₹30,000</div>
+            <div class="chip" onclick="selBudget('50000')">₹50,000</div>
+            <div class="chip" onclick="selBudget('70000')">₹70,000</div>
+            <div class="chip" onclick="selBudget('100000')">₹1,00,000</div>
+            <div class="chip" onclick="selBudget('150000')">₹1,50,000</div>
+            <div class="chip" onclick="selBudget('200000')">₹2,00,000+</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Primary Use Case <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="use_case" data-v="office" onclick="sel(this)">🏢 Office</div>
+            <div class="chip" data-f="use_case" data-v="programming" onclick="sel(this)">💻 Programming</div>
+            <div class="chip" data-f="use_case" data-v="gaming" onclick="sel(this)">🎮 Gaming</div>
+            <div class="chip" data-f="use_case" data-v="creative" onclick="sel(this)">🎨 Photo/Video</div>
+            <div class="chip" data-f="use_case" data-v="3d" onclick="sel(this)">🧊 3D Rendering</div>
+            <div class="chip" data-f="use_case" data-v="business" onclick="sel(this)">📊 Business</div>
+            <div class="chip" data-f="use_case" data-v="general" onclick="sel(this)">🌐 General</div>
+            <div class="chip oth" data-f="use_case" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-use_case">
+            <input type="text" placeholder="Describe your use case..." oninput="setOther('use_case',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="sec" id="s2">
+    <div class="sec-hdr" onclick="tog('s2')">
+      <div class="sec-left">
+        <span class="sec-ico">⚡</span>
+        <div>
+          <div class="sec-ttl">Processor &amp; Performance <span class="status empty" id="st2">Not set</span></div>
+          <div class="sec-sub">CPU brand, generation, and core count</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="fg">
+        <div class="lbl">Processor Brand <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="processor_brand" data-v="intel" onclick="sel(this)">🔵 Intel</div>
+          <div class="chip" data-f="processor_brand" data-v="amd" onclick="sel(this)">🔴 AMD</div>
+          <div class="chip" data-f="processor_brand" data-v="apple" onclick="sel(this)">🍎 Apple Silicon</div>
+          <div class="chip" data-f="processor_brand" data-v="any" onclick="sel(this)">🤷 No Preference</div>
+        </div>
+      </div>
+      <div class="row2" style="margin-top:20px">
+        <div class="fg">
+          <div class="lbl">Generation / Series <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="processor_gen" data-v="Intel Core i3 14th Gen" onclick="sel(this)">i3 14th Gen</div>
+            <div class="chip" data-f="processor_gen" data-v="Intel Core i5 14th Gen" onclick="sel(this)">i5 14th Gen</div>
+            <div class="chip" data-f="processor_gen" data-v="Intel Core i7 14th Gen" onclick="sel(this)">i7 14th Gen</div>
+            <div class="chip" data-f="processor_gen" data-v="Intel Core i9 14th Gen" onclick="sel(this)">i9 14th Gen</div>
+            <div class="chip" data-f="processor_gen" data-v="AMD Ryzen 5 7000 series" onclick="sel(this)">Ryzen 5 7000</div>
+            <div class="chip" data-f="processor_gen" data-v="AMD Ryzen 7 7000 series" onclick="sel(this)">Ryzen 7 7000</div>
+            <div class="chip" data-f="processor_gen" data-v="AMD Ryzen 9 7000 series" onclick="sel(this)">Ryzen 9 7000</div>
+            <div class="chip" data-f="processor_gen" data-v="Apple M3" onclick="sel(this)">Apple M3</div>
+            <div class="chip" data-f="processor_gen" data-v="Apple M3 Pro" onclick="sel(this)">Apple M3 Pro</div>
+            <div class="chip oth" data-f="processor_gen" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-processor_gen">
+            <input type="text" placeholder="e.g. Intel Core Ultra 9 185H" oninput="setOther('processor_gen',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Minimum Cores</div>
+          <div class="chips">
+            <div class="chip" data-f="min_cores" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="min_cores" data-v="4" onclick="sel(this)">4 Cores</div>
+            <div class="chip" data-f="min_cores" data-v="6" onclick="sel(this)">6 Cores</div>
+            <div class="chip" data-f="min_cores" data-v="8" onclick="sel(this)">8+ Cores</div>
+            <div class="chip" data-f="min_cores" data-v="12" onclick="sel(this)">12+ Cores</div>
+            <div class="chip oth" data-f="min_cores" data-v="__o__" onclick="sel(this)">✏️ Custom</div>
+          </div>
+          <div class="oi" id="oi-min_cores">
+            <input type="number" placeholder="Enter exact core count..." min="1" max="64" oninput="setOther('min_cores',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="sec" id="s3">
+    <div class="sec-hdr" onclick="tog('s3')">
+      <div class="sec-left">
+        <span class="sec-ico">💾</span>
+        <div>
+          <div class="sec-ttl">Memory &amp; Storage <span class="status empty" id="st3">Not set</span></div>
+          <div class="sec-sub">RAM size, type, and SSD capacity</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">RAM Size <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="ram" data-v="8GB" onclick="sel(this)">8 GB</div>
+            <div class="chip" data-f="ram" data-v="16GB" onclick="sel(this)">16 GB</div>
+            <div class="chip" data-f="ram" data-v="32GB" onclick="sel(this)">32 GB</div>
+            <div class="chip" data-f="ram" data-v="64GB" onclick="sel(this)">64 GB</div>
+            <div class="chip oth" data-f="ram" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-ram">
+            <input type="text" placeholder="e.g. 128GB, 24GB..." oninput="setOther('ram',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">RAM Type</div>
+          <div class="chips">
+            <div class="chip" data-f="ram_type" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="ram_type" data-v="DDR4" onclick="sel(this)">DDR4</div>
+            <div class="chip" data-f="ram_type" data-v="DDR5" onclick="sel(this)">DDR5</div>
+            <div class="chip" data-f="ram_type" data-v="LPDDR5" onclick="sel(this)">LPDDR5</div>
+            <div class="chip" data-f="ram_type" data-v="LPDDR5X" onclick="sel(this)">LPDDR5X</div>
+          </div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">Storage Size <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="storage" data-v="256GB" onclick="sel(this)">256 GB SSD</div>
+          <div class="chip" data-f="storage" data-v="512GB" onclick="sel(this)">512 GB SSD</div>
+          <div class="chip" data-f="storage" data-v="1TB" onclick="sel(this)">1 TB SSD</div>
+          <div class="chip" data-f="storage" data-v="2TB" onclick="sel(this)">2 TB SSD</div>
+          <div class="chip oth" data-f="storage" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+        </div>
+        <div class="oi" id="oi-storage">
+          <input type="text" placeholder="e.g. 4TB, 512GB HDD + 256GB SSD..." oninput="setOther('storage',this.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="sec" id="s4">
+    <div class="sec-hdr" onclick="tog('s4')">
+      <div class="sec-left">
+        <span class="sec-ico">🖥️</span>
+        <div>
+          <div class="sec-ttl">Graphics <span class="status empty" id="st4">Not set</span></div>
+          <div class="sec-sub">Integrated vs dedicated GPU preferences</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="fg">
+        <div class="lbl">GPU Type</div>
+        <div class="chips">
+          <div class="chip" data-f="gpu_type" data-v="integrated" onclick="sel(this)">Integrated (built-in)</div>
+          <div class="chip" data-f="gpu_type" data-v="discrete" onclick="sel(this)">Dedicated / Discrete</div>
+          <div class="chip" data-f="gpu_type" data-v="any" onclick="sel(this)">No Preference</div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">GPU Model (if discrete)</div>
+        <div class="chips">
+          <div class="chip" data-f="gpu_model" data-v="" onclick="sel(this)">Not Required</div>
+          <div class="chip" data-f="gpu_model" data-v="NVIDIA RTX 4050" onclick="sel(this)">RTX 4050</div>
+          <div class="chip" data-f="gpu_model" data-v="NVIDIA RTX 4060" onclick="sel(this)">RTX 4060</div>
+          <div class="chip" data-f="gpu_model" data-v="NVIDIA RTX 4070" onclick="sel(this)">RTX 4070</div>
+          <div class="chip" data-f="gpu_model" data-v="NVIDIA RTX 4080" onclick="sel(this)">RTX 4080</div>
+          <div class="chip" data-f="gpu_model" data-v="NVIDIA RTX 4090" onclick="sel(this)">RTX 4090</div>
+          <div class="chip" data-f="gpu_model" data-v="AMD Radeon RX 7600" onclick="sel(this)">RX 7600</div>
+          <div class="chip" data-f="gpu_model" data-v="AMD Radeon RX 7700" onclick="sel(this)">RX 7700</div>
+          <div class="chip oth" data-f="gpu_model" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+        </div>
+        <div class="oi" id="oi-gpu_model">
+          <input type="text" placeholder="e.g. RTX 3070, Quadro RTX 5000..." oninput="setOther('gpu_model',this.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="sec" id="s5">
+    <div class="sec-hdr" onclick="tog('s5')">
+      <div class="sec-left">
+        <span class="sec-ico">📡</span>
+        <div>
+          <div class="sec-ttl">Connectivity &amp; Ports <span class="status empty" id="st5">Not set</span></div>
+          <div class="sec-sub">Wireless, USB, and display connectivity</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Wireless</div>
+          <div class="chips">
+            <div class="chip" data-f="connectivity" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="connectivity" data-v="wifi5" onclick="sel(this)">Wi-Fi 5</div>
+            <div class="chip" data-f="connectivity" data-v="wifi6" onclick="sel(this)">Wi-Fi 6</div>
+            <div class="chip" data-f="connectivity" data-v="wifi6e" onclick="sel(this)">Wi-Fi 6E</div>
+            <div class="chip" data-f="connectivity" data-v="wifi7" onclick="sel(this)">Wi-Fi 7</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">USB / Ports</div>
+          <div class="chips">
+            <div class="chip" data-f="usb_ports" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="usb_ports" data-v="standard" onclick="sel(this)">Standard USB 3.0+</div>
+            <div class="chip" data-f="usb_ports" data-v="multiple" onclick="sel(this)">Multiple USB-C</div>
+            <div class="chip" data-f="usb_ports" data-v="thunderbolt" onclick="sel(this)">Thunderbolt 4/5</div>
+            <div class="chip oth" data-f="usb_ports" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-usb_ports">
+            <input type="text" placeholder="e.g. HDMI 2.1, SD Card slot..." oninput="setOther('usb_ports',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="sec" id="s6">
+    <div class="sec-hdr" onclick="tog('s6')">
+      <div class="sec-left">
+        <span class="sec-ico">🎯</span>
+        <div>
+          <div class="sec-ttl">Special Requirements <span class="status empty" id="st6">Not set</span></div>
+          <div class="sec-sub">OS, brand preference, and extra notes</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Operating System <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="os" data-v="windows11" onclick="sel(this)">Windows 11</div>
+            <div class="chip" data-f="os" data-v="windows11_pro" onclick="sel(this)">Windows 11 Pro</div>
+            <div class="chip" data-f="os" data-v="macos" onclick="sel(this)">macOS</div>
+            <div class="chip" data-f="os" data-v="linux" onclick="sel(this)">Linux</div>
+            <div class="chip" data-f="os" data-v="any" onclick="sel(this)">No Preference</div>
+            <div class="chip oth" data-f="os" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-os">
+            <input type="text" placeholder="e.g. Chrome OS, Ubuntu..." oninput="setOther('os',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Preferred Brand</div>
+          <div class="chips">
+            <div class="chip" data-f="preferred_brand" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="preferred_brand" data-v="Dell" onclick="sel(this)">Dell</div>
+            <div class="chip" data-f="preferred_brand" data-v="HP" onclick="sel(this)">HP</div>
+            <div class="chip" data-f="preferred_brand" data-v="Lenovo" onclick="sel(this)">Lenovo</div>
+            <div class="chip" data-f="preferred_brand" data-v="ASUS" onclick="sel(this)">ASUS</div>
+            <div class="chip" data-f="preferred_brand" data-v="Acer" onclick="sel(this)">Acer</div>
+            <div class="chip" data-f="preferred_brand" data-v="MSI" onclick="sel(this)">MSI</div>
+            <div class="chip" data-f="preferred_brand" data-v="Apple" onclick="sel(this)">Apple</div>
+            <div class="chip" data-f="preferred_brand" data-v="Samsung" onclick="sel(this)">Samsung</div>
+            <div class="chip oth" data-f="preferred_brand" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-preferred_brand">
+            <input type="text" placeholder="e.g. Razer, Microsoft Surface..." oninput="setOther('preferred_brand',this.value)">
+          </div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">Additional Notes (Optional)</div>
+        <div class="oi vis">
+          <textarea id="notesTA" placeholder="Any specific requirements? e.g. Government specs, certifications, MIL-SPEC, backlit keyboard, fingerprint reader..." oninput="st.notes=this.value"></textarea>
+          <div class="hint">These notes are passed directly to the AI to refine your recommendations.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btns" onclick="window.location.href='index.html'">← Back</button>
+    <button class="btn btnp" id="subBtn" onclick="doSubmit()">Get Recommendations →</button>
+  </div>
+</div>
+
+<script>
+var st={device_type:'',budget:'',use_case:'',processor_brand:'',processor_gen:'',min_cores:'',ram:'',ram_type:'',storage:'',gpu_type:'',gpu_model:'',connectivity:'',usb_ports:'',os:'',preferred_brand:'',notes:''};
+
+document.addEventListener('DOMContentLoaded',function(){
+  var t=sessionStorage.getItem('pcType');
+  if(!t){window.location.href='/index.html';return;}
+  st.device_type=t;
+  document.getElementById('devBadge').textContent=t==='desktop'?'🖥️ Desktop PC':'💻 Laptop';
+});
+
+function tog(id){document.getElementById(id).classList.toggle('open');}
+
+function sel(chip){
+  var f=chip.dataset.f, v=chip.dataset.v;
+  document.querySelectorAll('[data-f="'+f+'"]').forEach(function(c){c.classList.remove('sel');});
+  chip.classList.add('sel');
+  var oi=document.getElementById('oi-'+f);
+  if(v==='__o__'){
+    if(oi)oi.classList.add('vis');
+  } else {
+    if(oi)oi.classList.remove('vis');
+    st[f]=v;
+  }
+  updStatus();
+}
+
+function setOther(f,v){st[f]=v;updStatus();}
+
+function selBudget(v){
+  document.getElementById('budgetIn').value=v;
+  document.querySelectorAll('#bchips .chip').forEach(function(c){c.classList.remove('sel');});
+  document.querySelectorAll('#bchips .chip').forEach(function(c){
+    if(c.getAttribute('onclick').indexOf("'"+v+"'")>-1)c.classList.add('sel');
+  });
+  syncBudget(v);
+}
+
+function syncBudget(v){st.budget=v;updStatus();}
+
+function updStatus(){
+  setS('st1',st.budget&&st.use_case,st.budget?'₹'+Number(st.budget).toLocaleString('en-IN')+' · '+(st.use_case||'…'):null);
+  setS('st2',st.processor_brand&&st.processor_gen,st.processor_brand?(st.processor_brand.toUpperCase()+' · '+st.processor_gen):null);
+  setS('st3',st.ram&&st.storage,st.ram?(st.ram+' · '+st.storage):null);
+  setS('st4',!!st.gpu_type,st.gpu_type||null);
+  setS('st5',!!(st.connectivity||st.usb_ports),(st.connectivity||st.usb_ports)||null);
+  setS('st6',!!st.os,st.os||null);
+}
+
+function setS(id,ok,txt){
+  var e=document.getElementById(id);if(!e)return;
+  if(ok&&txt){e.textContent='✓ '+(txt.length>26?txt.slice(0,26)+'…':txt);e.classList.remove('empty');}
+  else{e.textContent='Not set';e.classList.add('empty');}
+}
+
+async function doSubmit(){
+  var miss=[];
+  if(!st.budget||Number(st.budget)<10000)miss.push('Budget (min ₹10,000)');
+  if(!st.use_case)miss.push('Primary Use Case');
+  if(!st.processor_brand)miss.push('Processor Brand');
+  if(!st.processor_gen)miss.push('Processor Generation');
+  if(!st.ram)miss.push('RAM Size');
+  if(!st.storage)miss.push('Storage Size');
+  if(!st.os)miss.push('Operating System');
+  if(miss.length){alert('Please fill in:\n\n• '+miss.join('\n• '));return;}
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('subBtn').disabled=true;
+  try{
+    var r=await fetch('/api/get-recommendations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(st)});
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Server error');
+    sessionStorage.setItem('recommendations',JSON.stringify(d));
+    sessionStorage.setItem('userSpecs',JSON.stringify(st));
+    window.location.href='/results.html';
+  }catch(e){
+    document.getElementById('ov').classList.remove('show');
+    document.getElementById('subBtn').disabled=false;
+    alert('Error: '+e.message);
+  }
+}
+</script>
+</body>
+</html>

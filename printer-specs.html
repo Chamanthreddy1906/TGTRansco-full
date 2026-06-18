@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Printer Specs — TG Transco</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff; --bg2: #f5f7fa; --bg3: #eef2f7;
+      --txt: #1a202c; --txt2: #4a5568; --txt3: #718096;
+      --border: #e2e8f0; --accent: #0066cc; --alight: #e8f1fb;
+      --a3: #f0f8ff; --green: #059669; --glight: #ecfdf5;
+      --red: #dc2626;
+      --sh1: 0 1px 3px rgba(0,0,0,0.08);
+      --sh2: 0 4px 12px rgba(0,0,0,0.10);
+      --fp: 'Inter',sans-serif; --fd: 'Poppins',sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--fp);font-size:15px;line-height:1.6;color:var(--txt);background:var(--bg2);min-height:100vh}
+
+    .hdr{background:var(--bg);border-bottom:1px solid var(--border);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+    .logo{font-family:var(--fd);font-size:22px;font-weight:700;text-decoration:none;color:var(--txt)}
+    .logo span{color:var(--accent)}
+    .back a{color:var(--accent);text-decoration:none;font-size:13px;font-weight:600}
+    .back a:hover{text-decoration:underline}
+
+    .wrap{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+    .ph{text-align:center;margin-bottom:36px}
+    .ph h1{font-family:var(--fd);font-size:32px;font-weight:700;margin-bottom:8px}
+    .ph p{color:var(--txt2);font-size:15px}
+    .badge{display:inline-block;background:var(--alight);color:var(--accent);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-top:14px}
+
+    .sec{background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden;box-shadow:var(--sh1);transition:box-shadow .2s}
+    .sec.open{box-shadow:var(--sh2)}
+    .sec-hdr{display:flex;justify-content:space-between;align-items:center;padding:18px 24px;cursor:pointer;user-select:none;transition:background .15s}
+    .sec-hdr:hover{background:var(--bg2)}
+    .sec.open .sec-hdr{background:var(--bg);border-bottom:1px solid var(--border)}
+    .sec-left{display:flex;align-items:center;gap:12px}
+    .sec-ico{font-size:20px}
+    .sec-ttl{font-family:var(--fd);font-size:15px;font-weight:700;color:var(--txt)}
+    .sec-sub{font-size:12px;color:var(--txt3);margin-top:1px}
+    .chevron{font-size:18px;color:var(--txt3);transition:transform .25s ease;line-height:1}
+    .sec.open .chevron{transform:rotate(180deg);color:var(--accent)}
+    .status{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--green);background:var(--glight);padding:3px 10px;border-radius:20px;margin-left:10px}
+    .status.empty{color:var(--txt3);background:var(--bg3)}
+
+    .body{display:none;padding:24px}
+    .sec.open .body{display:block}
+
+    .fg{margin-bottom:24px}
+    .fg:last-child{margin-bottom:0}
+    .lbl{font-size:12px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+    .lbl .req{color:var(--red);font-size:14px}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:8px 16px;border:1.5px solid var(--border);border-radius:24px;font-size:13px;font-weight:500;color:var(--txt2);background:var(--bg);cursor:pointer;transition:all .15s;user-select:none;white-space:nowrap}
+    .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--a3)}
+    .chip.sel{border-color:var(--accent);background:var(--accent);color:#fff;font-weight:600}
+    .chip.oth{border-style:dashed;color:var(--txt3)}
+    .chip.oth:hover{border-color:var(--accent);color:var(--accent)}
+    .chip.oth.sel{background:var(--bg2);color:var(--accent);border-style:solid}
+
+    .oi{margin-top:10px;display:none}
+    .oi.vis{display:block}
+    .oi input,.oi textarea{width:100%;padding:10px 14px;border:1.5px solid var(--accent);border-radius:8px;font-family:var(--fp);font-size:14px;color:var(--txt);background:var(--a3);outline:none;transition:all .2s}
+    .oi input:focus,.oi textarea:focus{box-shadow:0 0 0 3px rgba(0,102,204,.15)}
+    .oi textarea{resize:vertical;min-height:72px}
+    .hint{font-size:11px;color:var(--txt3);margin-top:5px}
+
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    @media(max-width:600px){.row2{grid-template-columns:1fr}}
+
+    .bwrap{display:flex;align-items:center;max-width:320px}
+    .bpfx{padding:10px 14px;background:var(--bg3);border:1.5px solid var(--border);border-right:none;border-radius:8px 0 0 8px;font-size:14px;font-weight:600;color:var(--txt2)}
+    .binput{flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:0 8px 8px 0;font-family:var(--fp);font-size:14px;color:var(--txt);background:var(--bg);outline:none;transition:all .2s}
+    .binput:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,102,204,.12)}
+
+    .actions{display:flex;gap:14px;justify-content:center;margin-top:36px}
+    .btn{padding:13px 36px;border:none;border-radius:8px;font-family:var(--fp);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+    .btnp{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(0,102,204,.3)}
+    .btnp:hover{background:#0052a3;box-shadow:0 4px 16px rgba(0,102,204,.35)}
+    .btnp:disabled{opacity:.55;cursor:not-allowed}
+    .btns{background:var(--bg);color:var(--txt2);border:1.5px solid var(--border)}
+    .btns:hover{background:var(--bg2);border-color:var(--accent);color:var(--accent)}
+
+    .overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.88);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+    .overlay.show{display:flex}
+    .spin{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    .olt{font-weight:600;color:var(--txt);font-size:15px}
+    .ols{font-size:13px;color:var(--txt2)}
+
+    @media(max-width:600px){
+      .hdr{padding:14px 20px}
+      .wrap{padding:28px 14px 60px}
+      .body{padding:18px}
+      .actions{flex-direction:column}
+      .btn{width:100%}
+    }
+  </style>
+</head>
+<body>
+
+<header class="hdr">
+  <a href="index.html" class="logo">TG <span>Transco</span></a>
+  <div class="back"><a href="index.html">← Back to Home</a></div>
+</header>
+
+<div class="overlay" id="ov">
+  <div class="spin"></div>
+  <div class="olt">Finding the best Printers for you…</div>
+  <div class="ols">Searching across all major brands — this may take a moment</div>
+</div>
+
+<div class="wrap">
+  <div class="ph">
+    <h1>🖨️ Printer Requirements</h1>
+    <p>Click each section to expand and fill your preferences</p>
+    <div class="badge">🖨️ Printer</div>
+  </div>
+
+  <!-- SECTION 1: Budget & Purpose -->
+  <div class="sec open" id="s1">
+    <div class="sec-hdr" onclick="tog('s1')">
+      <div class="sec-left">
+        <span class="sec-ico">💰</span>
+        <div>
+          <div class="sec-ttl">Budget &amp; Purpose <span class="status empty" id="st1">Not set</span></div>
+          <div class="sec-sub">How much to spend and what kind of printing</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Budget (₹ INR) <span class="req">*</span></div>
+          <div class="bwrap">
+            <span class="bpfx">₹</span>
+            <input class="binput" type="number" id="budgetIn" placeholder="e.g. 25000" min="5000" step="1000" oninput="syncBudget(this.value)">
+          </div>
+          <div class="chips" style="margin-top:10px" id="bchips">
+            <div class="chip" onclick="selBudget('10000')">₹10,000</div>
+            <div class="chip" onclick="selBudget('20000')">₹20,000</div>
+            <div class="chip" onclick="selBudget('30000')">₹30,000</div>
+            <div class="chip" onclick="selBudget('50000')">₹50,000</div>
+            <div class="chip" onclick="selBudget('75000')">₹75,000</div>
+            <div class="chip" onclick="selBudget('100000')">₹1,00,000+</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Primary Use <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="use_case" data-v="office" onclick="sel(this)">🏢 Office / General</div>
+            <div class="chip" data-f="use_case" data-v="government" onclick="sel(this)">🏛️ Government</div>
+            <div class="chip" data-f="use_case" data-v="highvolume" onclick="sel(this)">📦 High Volume</div>
+            <div class="chip" data-f="use_case" data-v="photo" onclick="sel(this)">📸 Photo Printing</div>
+            <div class="chip oth" data-f="use_case" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-use_case">
+            <input type="text" placeholder="Describe your use case..." oninput="setOther('use_case',this.value)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Technology & Print Type -->
+  <div class="sec" id="s2">
+    <div class="sec-hdr" onclick="tog('s2')">
+      <div class="sec-left">
+        <span class="sec-ico">⚙️</span>
+        <div>
+          <div class="sec-ttl">Technology &amp; Functions <span class="status empty" id="st2">Not set</span></div>
+          <div class="sec-sub">Laser or Inkjet, and MFP capabilities</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="fg">
+        <div class="lbl">Print Technology <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="technology" data-v="laser" onclick="sel(this)">⚡ Laser</div>
+          <div class="chip" data-f="technology" data-v="inkjet" onclick="sel(this)">💧 Inkjet</div>
+          <div class="chip" data-f="technology" data-v="any" onclick="sel(this)">🤷 No Preference</div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">Functions Required <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="functions" data-v="print_only" onclick="sel(this)">🖨️ Print Only</div>
+          <div class="chip" data-f="functions" data-v="print_copy_scan" onclick="sel(this)">📠 Print + Copy + Scan (MFP)</div>
+          <div class="chip" data-f="functions" data-v="print_copy_scan_fax" onclick="sel(this)">📟 Print + Copy + Scan + Fax</div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">Color Capability <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="color_type" data-v="monochrome" onclick="sel(this)">⚫ Black &amp; White Only</div>
+          <div class="chip" data-f="color_type" data-v="color" onclick="sel(this)">🌈 Color</div>
+          <div class="chip" data-f="color_type" data-v="any" onclick="sel(this)">🤷 No Preference</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Print Speed & Volume -->
+  <div class="sec" id="s3">
+    <div class="sec-hdr" onclick="tog('s3')">
+      <div class="sec-left">
+        <span class="sec-ico">🚀</span>
+        <div>
+          <div class="sec-ttl">Speed &amp; Volume <span class="status empty" id="st3">Not set</span></div>
+          <div class="sec-sub">Pages per minute and monthly duty cycle</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Print Speed (PPM) <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="print_speed" data-v="20" onclick="sel(this)">20+ PPM</div>
+            <div class="chip" data-f="print_speed" data-v="30" onclick="sel(this)">30+ PPM</div>
+            <div class="chip" data-f="print_speed" data-v="40" onclick="sel(this)">40+ PPM</div>
+            <div class="chip" data-f="print_speed" data-v="50" onclick="sel(this)">50+ PPM</div>
+            <div class="chip oth" data-f="print_speed" data-v="__o__" onclick="sel(this)">✏️ Custom</div>
+          </div>
+          <div class="oi" id="oi-print_speed">
+            <input type="number" placeholder="Enter minimum PPM..." min="1" max="200" oninput="setOther('print_speed',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Monthly Duty Cycle</div>
+          <div class="chips">
+            <div class="chip" data-f="duty_cycle" data-v="10000" onclick="sel(this)">10,000+</div>
+            <div class="chip" data-f="duty_cycle" data-v="30000" onclick="sel(this)">30,000+</div>
+            <div class="chip" data-f="duty_cycle" data-v="50000" onclick="sel(this)">50,000+</div>
+            <div class="chip" data-f="duty_cycle" data-v="80000" onclick="sel(this)">80,000+</div>
+            <div class="chip oth" data-f="duty_cycle" data-v="__o__" onclick="sel(this)">✏️ Custom</div>
+          </div>
+          <div class="oi" id="oi-duty_cycle">
+            <input type="number" placeholder="Enter minimum duty cycle..." min="1000" oninput="setOther('duty_cycle',this.value)">
+          </div>
+        </div>
+      </div>
+      <div class="row2" style="margin-top:20px">
+        <div class="fg">
+          <div class="lbl">Copy Speed (CPM)</div>
+          <div class="chips">
+            <div class="chip" data-f="copy_speed" data-v="" onclick="sel(this)">Not Required</div>
+            <div class="chip" data-f="copy_speed" data-v="20" onclick="sel(this)">20+ CPM</div>
+            <div class="chip" data-f="copy_speed" data-v="30" onclick="sel(this)">30+ CPM</div>
+            <div class="chip" data-f="copy_speed" data-v="40" onclick="sel(this)">40+ CPM</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Scan Speed (PPM)</div>
+          <div class="chips">
+            <div class="chip" data-f="scan_speed" data-v="" onclick="sel(this)">Not Required</div>
+            <div class="chip" data-f="scan_speed" data-v="20" onclick="sel(this)">20+ PPM</div>
+            <div class="chip" data-f="scan_speed" data-v="29" onclick="sel(this)">29+ PPM</div>
+            <div class="chip" data-f="scan_speed" data-v="40" onclick="sel(this)">40+ PPM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Print Quality & Resolution -->
+  <div class="sec" id="s4">
+    <div class="sec-hdr" onclick="tog('s4')">
+      <div class="sec-left">
+        <span class="sec-ico">🔍</span>
+        <div>
+          <div class="sec-ttl">Print Quality <span class="status empty" id="st4">Not set</span></div>
+          <div class="sec-sub">Resolution, duplex, and paper handling</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="fg">
+        <div class="lbl">Print Resolution (DPI) <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="resolution" data-v="600x600" onclick="sel(this)">600 × 600 dpi</div>
+          <div class="chip" data-f="resolution" data-v="1200x1200" onclick="sel(this)">1200 × 1200 dpi</div>
+          <div class="chip" data-f="resolution" data-v="2400x600" onclick="sel(this)">2400 × 600 dpi</div>
+          <div class="chip" data-f="resolution" data-v="any" onclick="sel(this)">No Preference</div>
+        </div>
+      </div>
+      <div class="row2" style="margin-top:20px">
+        <div class="fg">
+          <div class="lbl">Duplex Printing <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="duplex" data-v="automatic" onclick="sel(this)">✅ Automatic Duplex</div>
+            <div class="chip" data-f="duplex" data-v="manual" onclick="sel(this)">Manual Duplex</div>
+            <div class="chip" data-f="duplex" data-v="none" onclick="sel(this)">Not Required</div>
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Paper Sizes <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="paper_size" data-v="A4" onclick="sel(this)">A4</div>
+            <div class="chip" data-f="paper_size" data-v="A4_Legal" onclick="sel(this)">A4 + Legal</div>
+            <div class="chip" data-f="paper_size" data-v="A4_A3" onclick="sel(this)">A4 + A3</div>
+            <div class="chip" data-f="paper_size" data-v="all" onclick="sel(this)">All Sizes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Memory & Processor -->
+  <div class="sec" id="s5">
+    <div class="sec-hdr" onclick="tog('s5')">
+      <div class="sec-left">
+        <span class="sec-ico">💾</span>
+        <div>
+          <div class="sec-ttl">Memory &amp; Processor <span class="status empty" id="st5">Not set</span></div>
+          <div class="sec-sub">Internal memory and processor speed</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Memory (RAM)</div>
+          <div class="chips">
+            <div class="chip" data-f="memory" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="memory" data-v="256MB" onclick="sel(this)">256 MB+</div>
+            <div class="chip" data-f="memory" data-v="512MB" onclick="sel(this)">512 MB+</div>
+            <div class="chip" data-f="memory" data-v="1GB" onclick="sel(this)">1 GB+</div>
+            <div class="chip oth" data-f="memory" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-memory">
+            <input type="text" placeholder="e.g. 2GB..." oninput="setOther('memory',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Processor Speed</div>
+          <div class="chips">
+            <div class="chip" data-f="processor_speed" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="processor_speed" data-v="600MHz" onclick="sel(this)">600 MHz+</div>
+            <div class="chip" data-f="processor_speed" data-v="1200MHz" onclick="sel(this)">1200 MHz+</div>
+            <div class="chip" data-f="processor_speed" data-v="1500MHz" onclick="sel(this)">1500 MHz+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: Connectivity -->
+  <div class="sec" id="s6">
+    <div class="sec-hdr" onclick="tog('s6')">
+      <div class="sec-left">
+        <span class="sec-ico">📡</span>
+        <div>
+          <div class="sec-ttl">Connectivity <span class="status empty" id="st6">Not set</span></div>
+          <div class="sec-sub">USB, Ethernet, and wireless options</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="fg">
+        <div class="lbl">Required Connectivity <span class="req">*</span></div>
+        <div class="chips">
+          <div class="chip" data-f="connectivity" data-v="usb" onclick="sel(this)">🔌 USB Only</div>
+          <div class="chip" data-f="connectivity" data-v="usb_ethernet" onclick="sel(this)">🔌 USB + Ethernet</div>
+          <div class="chip" data-f="connectivity" data-v="usb_wifi" onclick="sel(this)">📶 USB + Wi-Fi</div>
+          <div class="chip" data-f="connectivity" data-v="all" onclick="sel(this)">🌐 USB + Ethernet + Wi-Fi</div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">Network Speed</div>
+        <div class="chips">
+          <div class="chip" data-f="network_speed" data-v="" onclick="sel(this)">No Preference</div>
+          <div class="chip" data-f="network_speed" data-v="10/100" onclick="sel(this)">10/100 Mbps</div>
+          <div class="chip" data-f="network_speed" data-v="gigabit" onclick="sel(this)">Gigabit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: Scan & File Formats -->
+  <div class="sec" id="s7">
+    <div class="sec-hdr" onclick="tog('s7')">
+      <div class="sec-left">
+        <span class="sec-ico">📄</span>
+        <div>
+          <div class="sec-ttl">Scan Formats &amp; Features <span class="status empty" id="st7">Not set</span></div>
+          <div class="sec-sub">Supported file formats for scanning</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="fg">
+        <div class="lbl">Scan File Formats</div>
+        <div class="chips">
+          <div class="chip" data-f="scan_formats" data-v="pdf" onclick="sel(this)">PDF</div>
+          <div class="chip" data-f="scan_formats" data-v="pdf_jpg" onclick="sel(this)">PDF + JPG</div>
+          <div class="chip" data-f="scan_formats" data-v="pdf_jpg_tiff" onclick="sel(this)">PDF + JPG + TIFF</div>
+          <div class="chip" data-f="scan_formats" data-v="any" onclick="sel(this)">No Preference</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: Brand & Warranty -->
+  <div class="sec" id="s8">
+    <div class="sec-hdr" onclick="tog('s8')">
+      <div class="sec-left">
+        <span class="sec-ico">🎯</span>
+        <div>
+          <div class="sec-ttl">Brand &amp; Warranty <span class="status empty" id="st8">Not set</span></div>
+          <div class="sec-sub">Brand preference and support requirements</div>
+        </div>
+      </div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="body">
+      <div class="row2">
+        <div class="fg">
+          <div class="lbl">Preferred Brand</div>
+          <div class="chips">
+            <div class="chip" data-f="preferred_brand" data-v="" onclick="sel(this)">No Preference</div>
+            <div class="chip" data-f="preferred_brand" data-v="HP" onclick="sel(this)">HP</div>
+            <div class="chip" data-f="preferred_brand" data-v="Canon" onclick="sel(this)">Canon</div>
+            <div class="chip" data-f="preferred_brand" data-v="Epson" onclick="sel(this)">Epson</div>
+            <div class="chip" data-f="preferred_brand" data-v="Brother" onclick="sel(this)">Brother</div>
+            <div class="chip" data-f="preferred_brand" data-v="Ricoh" onclick="sel(this)">Ricoh</div>
+            <div class="chip" data-f="preferred_brand" data-v="Xerox" onclick="sel(this)">Xerox</div>
+            <div class="chip" data-f="preferred_brand" data-v="Samsung" onclick="sel(this)">Samsung</div>
+            <div class="chip oth" data-f="preferred_brand" data-v="__o__" onclick="sel(this)">✏️ Other</div>
+          </div>
+          <div class="oi" id="oi-preferred_brand">
+            <input type="text" placeholder="Enter brand name..." oninput="setOther('preferred_brand',this.value)">
+          </div>
+        </div>
+        <div class="fg">
+          <div class="lbl">Warranty Required <span class="req">*</span></div>
+          <div class="chips">
+            <div class="chip" data-f="warranty" data-v="1year" onclick="sel(this)">1 Year</div>
+            <div class="chip" data-f="warranty" data-v="2year" onclick="sel(this)">2 Years</div>
+            <div class="chip" data-f="warranty" data-v="3year" onclick="sel(this)">3 Years</div>
+            <div class="chip" data-f="warranty" data-v="onsite" onclick="sel(this)">Onsite Warranty</div>
+          </div>
+        </div>
+      </div>
+      <div class="fg" style="margin-top:20px">
+        <div class="lbl">Additional Notes (Optional)</div>
+        <div class="oi vis">
+          <textarea id="notesTA" placeholder="Any specific requirements? e.g. Government procurement, certifications needed, ADF feeder, high-capacity toner..." oninput="st.notes=this.value"></textarea>
+          <div class="hint">These notes are passed to the AI to refine your recommendations.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btns" onclick="window.location.href='index.html'">← Back</button>
+    <button class="btn btnp" id="subBtn" onclick="doSubmit()">Get Recommendations →</button>
+  </div>
+</div>
+
+<script>
+var st = {
+  device_type: 'printer',
+  budget: '', use_case: '', technology: '', functions: '', color_type: '',
+  print_speed: '', duty_cycle: '', copy_speed: '', scan_speed: '',
+  resolution: '', duplex: '', paper_size: '',
+  memory: '', processor_speed: '',
+  connectivity: '', network_speed: '',
+  scan_formats: '', preferred_brand: '', warranty: '', notes: ''
+};
+
+function tog(id){ document.getElementById(id).classList.toggle('open'); }
+
+function sel(chip){
+  var f=chip.dataset.f, v=chip.dataset.v;
+  document.querySelectorAll('[data-f="'+f+'"]').forEach(function(c){c.classList.remove('sel');});
+  chip.classList.add('sel');
+  var oi=document.getElementById('oi-'+f);
+  if(v==='__o__'){
+    if(oi)oi.classList.add('vis');
+  } else {
+    if(oi)oi.classList.remove('vis');
+    st[f]=v;
+  }
+  updStatus();
+}
+
+function setOther(f,v){st[f]=v;updStatus();}
+
+function selBudget(v){
+  document.getElementById('budgetIn').value=v;
+  document.querySelectorAll('#bchips .chip').forEach(function(c){c.classList.remove('sel');});
+  document.querySelectorAll('#bchips .chip').forEach(function(c){
+    if(c.getAttribute('onclick').indexOf("'"+v+"'")>-1)c.classList.add('sel');
+  });
+  syncBudget(v);
+}
+
+function syncBudget(v){st.budget=v;updStatus();}
+
+function updStatus(){
+  setS('st1',st.budget&&st.use_case,st.budget?'₹'+Number(st.budget).toLocaleString('en-IN')+' · '+(st.use_case||'…'):null);
+  setS('st2',st.technology&&st.functions&&st.color_type,(st.technology||'')+(st.functions?' · '+st.functions:''));
+  setS('st3',!!st.print_speed,st.print_speed?st.print_speed+' PPM min':null);
+  setS('st4',st.resolution&&st.duplex&&st.paper_size,st.resolution||null);
+  setS('st5',!!(st.memory||st.processor_speed),(st.memory||st.processor_speed)||null);
+  setS('st6',!!st.connectivity,st.connectivity||null);
+  setS('st7',!!(st.scan_formats),st.scan_formats||null);
+  setS('st8',!!st.warranty,st.warranty||null);
+}
+
+function setS(id,ok,txt){
+  var e=document.getElementById(id);if(!e)return;
+  if(ok&&txt){e.textContent='✓ '+(txt.length>26?txt.slice(0,26)+'…':txt);e.classList.remove('empty');}
+  else{e.textContent='Not set';e.classList.add('empty');}
+}
+
+async function doSubmit(){
+  var miss=[];
+  if(!st.budget||Number(st.budget)<5000) miss.push('Budget (min ₹5,000)');
+  if(!st.use_case)   miss.push('Primary Use');
+  if(!st.technology) miss.push('Print Technology');
+  if(!st.functions)  miss.push('Functions Required');
+  if(!st.color_type) miss.push('Color Capability');
+  if(!st.print_speed)miss.push('Print Speed');
+  if(!st.resolution) miss.push('Print Resolution');
+  if(!st.duplex)     miss.push('Duplex Printing');
+  if(!st.paper_size) miss.push('Paper Size');
+  if(!st.connectivity)miss.push('Connectivity');
+  if(!st.warranty)   miss.push('Warranty');
+  if(miss.length){ alert('Please fill in:\n\n• '+miss.join('\n• ')); return; }
+
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('subBtn').disabled=true;
+  try {
+    var r=await fetch('/api/get-printer-recommendations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(st)});
+    var d=await r.json();
+    if(!r.ok) throw new Error(d.error||'Server error');
+    sessionStorage.setItem('recommendations',JSON.stringify(d));
+    sessionStorage.setItem('userSpecs',JSON.stringify(st));
+    window.location.href='/printer-results.html';
+  } catch(e) {
+    document.getElementById('ov').classList.remove('show');
+    document.getElementById('subBtn').disabled=false;
+    alert('Error: '+e.message);
+  }
+}
+</script>
+</body>
+</html>
